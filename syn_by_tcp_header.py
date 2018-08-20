@@ -19,14 +19,9 @@ def checksum(msg):
 def raw_tcp(s, src_ip, src_port, dst_ip, dst_port, seq, ack_seq, syn_flag=0, ack_flag=1, psh_flag=0
             , payload_data=''):
 
-
     ip_source = src_ip
     ip_dest = dst_ip
     ip_protocol = socket.IPPROTO_TCP
-
-    # useless
-    # address = (ip_daddr, 6666)
-    # s.connect(address)
 
     #  tcp header
     tcp_sport = src_port	        # source port
@@ -73,15 +68,12 @@ def raw_tcp(s, src_ip, src_port, dst_ip, dst_port, seq, ack_seq, syn_flag=0, ack
 
     tcp_checksum = checksum(chk)
 
-
     # 重新构建tcp header，把checksum结果填进去
     tcp_header = pack('!HHLLBBHHH' , tcp_sport, tcp_dport, tcp_seq, tcp_ack_seq, tcp_offset_reserv, tcp_flags, tcp_window_size, tcp_checksum, tcp_urgent_ptr)
 
-    # 最终的tcp/ip packet！
-    # packet = ip_header + tcp_header + payload_data
+    # 最终的tcp/ip packet
     packet = tcp_header + payload_data
     # 发送出去
-
     s.sendto(packet, (ip_dest, 0))
 
 if __name__ == '__main__':
@@ -100,9 +92,9 @@ if __name__ == '__main__':
         print 'Socket could not be created. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
         sys.exit()
 
-    seqNum = 19890602
+    seqNum = 19890602 #随便初始化的一个值
     ackNum = 0
-
+    # syn
     raw_tcp(s, src_ip, src_port, dst_ip, dst_port, seq=seqNum, ack_seq=ackNum, syn_flag=1, ack_flag=0)
 
     for i in range(2):
